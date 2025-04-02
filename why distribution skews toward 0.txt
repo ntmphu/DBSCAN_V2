@@ -1,0 +1,33 @@
+why distribution skews toward 0
+-> p<0.05 nhiu
+-> reject H0 when H0 true nhiu. H0: j is not a true outlier
+-> (claim j is a true outlier when (j is actually not a true outlier)) nhiu
+if interval O = O_obs too big compare to  X_j - mean(X_-O)
+
+if j is true outlier -> reject -> p value thap
+p value thap nhieu => j is true outlier nhieu
+dbscan wrt. eps and minpts successfully detect true outlier
+=> it can lack of all true outliers, but all the detected one is true
+=> the eps is high
+=> decrease eps -> increase outliers detected, including true and not true ones OR find dataset with 
+
+
+
+
+
+
+
+sioc:
+-----------|-\-\------|------------------
+si:
+-----------|-\-\------|----|------|------
+
+
+
+
+why si is not different from si:
+just a few change in the dataset will result different set of outlier, so it is rare when neps != neps_obs but still O = O_obs
+
+-> j in O: dbscan minpts and eps from X
+
+When O resulted from dbscan is all true outlier? 

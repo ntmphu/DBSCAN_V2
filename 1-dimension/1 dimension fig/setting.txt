@@ -1,0 +1,14 @@
+FPR
+max_iteration = 120
+Alpha = 0.05
+list_n = [50, 100, 150, 200]
+eps = 0.2
+minpts = 5
+
+TPR
+max_iteration = 150
+Alpha = 0.05
+n = 50
+list_delta = [1, 2, 3, 4]
+eps = 0.2
+minpts = 5

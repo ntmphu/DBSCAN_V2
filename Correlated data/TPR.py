@@ -1,0 +1,147 @@
+from naive_pvalue import run_naive_TPR
+from parametric import run_parametric_TPR
+from si_oc import run_sioc_TPR
+import matplotlib.pyplot as plt
+import multiprocessing
+from multiprocessing import Pool
+from tqdm import tqdm 
+from util import *
+
+num_cores = multiprocessing.cpu_count()
+num_workers = max(1, num_cores - 4) 
+
+max_iteration = 200
+Alpha = 0.05
+n = 50
+d = 10
+minpts = 10
+eps = 3
+rho = 0.5
+list_delta = [1, 2, 3, 4]
+
+def run_wrapper(args):
+    n, d, delta, minpts, eps, rho, method = args
+    return method(n, d, delta, minpts, eps, rho)
+    
+def tpr_si_oc():
+    list_TPR = []
+    for delta in list_delta:
+        number_of_true_positive = 0
+        number_of_false_negative = 0
+        count = 0
+
+        # Prepare the arguments as a list of tuples
+        args = [(n, d, delta, minpts, eps, rho, run_sioc_TPR) for _ in range(max_iteration)]
+
+        # Use multiprocessing to handle (n, delta) pairs
+        with Pool(processes=num_workers) as pool:
+            for p_value, true_detection in tqdm(pool.imap_unordered(run_wrapper, args), total=max_iteration):
+                if p_value is not None:
+                    if p_value <= Alpha:
+                        if true_detection:
+                            number_of_true_positive += 1
+                    
+                    else:
+                        if true_detection:
+                            number_of_false_negative += 1
+                        
+                    count += 1
+                    if count == 120:
+                        break
+
+        # Calculate the True Positive Rate (TPR)
+        TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)
+        list_TPR.append(TPR)
+    return list_TPR
+    
+def tpr_parametric():
+    list_TPR = []
+    for delta in list_delta:
+        number_of_true_positive = 0
+        number_of_false_negative = 0
+        count = 0
+
+        # Prepare the arguments as a list of tuples
+        args = [(n, d, delta, minpts, eps, rho, run_parametric_TPR) for _ in range(max_iteration)]
+
+        # Use multiprocessing to handle (n, delta) pairs
+        with Pool(processes=num_workers) as pool:
+            for p_value, true_detection in tqdm(pool.imap_unordered(run_wrapper, args), total=max_iteration):
+                if p_value is not None:
+                    if p_value <= Alpha:
+                        if true_detection:
+                            number_of_true_positive += 1
+                    
+                    else:
+                        if true_detection:
+                            number_of_false_negative += 1
+                        
+                    count += 1
+                    if count == 120:
+                        break
+
+        # Calculate the True Positive Rate (TPR)
+        TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)
+        list_TPR.append(TPR)
+    return list_TPR
+def tpr_bonferroni():
+    list_TPR = []
+    p_max = Alpha/(2**n)
+    for delta in list_delta:
+        number_of_true_positive = 0 
+        number_of_false_negative = 0
+        count = 0
+
+        # Prepare the arguments as a list of tuples
+        args = [(n, d, delta, minpts, eps, rho, run_naive_TPR) for _ in range(max_iteration)]
+
+        # Use multiprocessing to handle (n, delta) pairs
+        with Pool(processes=num_workers) as pool:
+            for p_value, true_detection in tqdm(pool.imap_unordered(run_wrapper, args), total=max_iteration):
+                if p_value is not None:
+                    if p_value <= p_max:
+                        if true_detection:
+                            number_of_true_positive += 1
+                    
+                    else:
+                        if true_detection:
+                            number_of_false_negative += 1
+                        
+                    count += 1
+                    if count == 120:
+                        break
+
+        # Calculate the True Positive Rate (TPR)
+        TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)
+        list_TPR.append(TPR)
+    return list_TPR
+
+if __name__ == '__main__':
+
+    
+    
+    list_TPR_SI = tpr_parametric()
+    list_TPR_bonferroni = tpr_bonferroni()
+    list_TPR_SI_OC = tpr_si_oc()
+    
+    fig, ax = plt.subplots()
+
+    ax.plot(list_delta, list_TPR_SI, color = 'green', label = 'SI-CLAD')
+    ax.plot(list_delta, list_TPR_SI_OC, color = 'orange', label = 'SI-CLAD')
+    ax.plot(list_delta, list_TPR_bonferroni, color = 'blue', label = 'Bonferroni')
+    
+    # Add scatter points on each line
+    ax.scatter(list_delta, list_TPR_SI, color='green')
+    ax.scatter(list_delta, list_TPR_SI_OC, color='orange')
+    ax.scatter(list_delta, list_TPR_bonferroni, color='blue')
+    
+  
+    
+    ax.set_xticks(list_delta)
+    ax.set_ylim(-0.05,1.05)
+    
+    ax.legend(loc = 'upper right')
+    plt.xlabel("delta")
+    plt.ylabel("TPR")
+    
+    plt.savefig("correlated-tpr.png", dpi=300, bbox_inches='tight')

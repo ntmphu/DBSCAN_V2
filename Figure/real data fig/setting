@@ -1,0 +1,13 @@
+heart disease
+max_iteration = 300
+n = 200
+minpts = 26
+eps = 4
+d = 13 (drop labellabel)
+
+breast cancer
+max_iteration = 120
+n = 150
+d = 15 (random selected)
+minpts = 30
+eps = 3
