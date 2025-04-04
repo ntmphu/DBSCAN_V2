@@ -9,8 +9,7 @@ def run_parametric_dbscan(j, n, d, O_obs, minpts, eps, threshold, a, c):
   zk = - threshold
   list_zk = [zk]
   list_setofOutliers = []
-  list_interval = []
-  list_sign = []  
+  list_sign = []
   while zk < threshold:
     x_zk = a*zk + c
     X_zk = unvec(x_zk, n, d)
@@ -26,29 +25,18 @@ def run_parametric_dbscan(j, n, d, O_obs, minpts, eps, threshold, a, c):
 
     intersection, S = compute_z_interval(j, n, d, O_obs, eps, neps_zk, a, c, zk, minusO_zk, x_zk)
     list_sign.append(S)
-    #print(zk, intersection)
-       #[(interval1), (interval2)]
-    #print(zk, intersection)
-    #next_zk = zk
     for each_interval in intersection:
       if each_interval[0] <= zk <= each_interval[1]:
-        #if each_interval[0] < list_zk[-1]:
-         # print("err", each_interval[0] - list_zk[-1])
-          #if each_interval[0] - list_zk[-1] == -float('inf'):
-           # print(zk, each_interval)
         next_zk = each_interval[1]
-        list_interval.append([each_interval[0], each_interval[1]])
         break
 
-    zk = next_zk + 0.0001        #[[zk;...], [zk+1,...]]
+    zk = next_zk + 0.0001        
     if zk < threshold:
       list_zk.append(zk)
     else:
       list_zk.append(threshold)
 
-
-    #print(zk)
-  return list_zk, list_interval, list_setofOutliers, list_sign
+  return list_zk, list_setofOutliers, list_sign
 
 def run_parametric(X, minpts, eps):
 
@@ -104,20 +92,16 @@ def run_parametric(X, minpts, eps):
   a = np.dot(np.dot(Sigma, eta), np.linalg.inv(etaT_Sigma_eta))
   c = np.dot(np.identity(int(n*d)) - np.dot(a,eta.T), x)
 
-  list_zk, list_z_interval, list_setofOutliers, list_sign = run_parametric_dbscan(j, n, d, O, minpts, eps, threshold, a, c)
+  list_zk, list_setofOutliers, list_sign = run_parametric_dbscan(j, n, d, O, minpts, eps, threshold, a, c)
   #print("list zk", len(list_zk), list_zk)
   #print("list O",  len(list_setofOutliers), list_setofOutliers)
 
   z_interval = []
-  z_k = []
-
   for i in range(len(list_setofOutliers)):
     if np.array_equal(np.sort(list_setofOutliers[i]), np.sort(O)) and np.array_equal(list_sign[i], S_obs):
           #print(i)
-      z_interval.append([list_zk[i], list_zk[i + 1] - 0.00001])
-      z_k.append(list_zk[i])
-  #print(z_interval)
-  #print(z_k)
+      z_interval.append([list_zk[i], list_zk[i + 1] - 0.0001])
+      
   new_z_interval = []
   for each_interval in z_interval:
     if len(new_z_interval) == 0:
@@ -128,14 +112,6 @@ def run_parametric(X, minpts, eps):
             new_z_interval[-1][1] = each_interval[1]
         else:
             new_z_interval.append(each_interval)
-  #print("z", z)
-  #print(z)
-
-
-
-
-
-  #print(intersection)
 
   z = etaTx[0][0]
   mu = 0
@@ -143,36 +119,10 @@ def run_parametric(X, minpts, eps):
   cdf = pivot_with_specified_interval(new_z_interval, eta, z, Sigma, mu)
   if cdf is None:
       return None
-  """
-  if cdf is None or -1e-10 < cdf < 1e-10:
-  
-    print("----------------")
-    print(f"O_obs = {O}")
-    print(f"sign_obs = {S_obs.flatten()}")
-    #print(f"neps_obs = {neps}")
-    print(f"test statistic", z)
-    print("parametric", new_z_interval)
-    #print(list_zk)
-    sioc_interval, sioc_sign = compute_z_interval(j, n, d, O, eps, neps, a, c, z, minusO, x)
-    print("sioc", sioc_interval, sioc_sign.flatten())
 
-    for i in range(len(list_setofOutliers)):
-      if list_z_interval[i][0] <= z <= list_z_interval[i][1]:
-        print(list_z_interval[i-1],list_z_interval[i], list_z_interval[i+1])
-        print(list_setofOutliers[i-1], list_setofOutliers[i], list_setofOutliers[i+1])
-        #print(list_neps[i])
-        print(list_sign[i].flatten())
-
-    if cdf is None:
-      print("nonecdf")
-      return None
-    else:
-      print("cdf = ", cdf)
-      return None
-    """
   selective_p_value = 2 * min(cdf, 1 - cdf)
   #print(selective_p_value)
-  filepath = r'C:\Users\phung\OneDrive\Desktop\Statistic Machine Learning\Parametric DBSCAN\Realdata\parametric.txt'
+  filepath = r'Realdata\parametric.txt'
         
   with open(filepath, 'a') as file:
       file.write(f'{selective_p_value}\n')

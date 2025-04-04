@@ -20,7 +20,7 @@ minpts = 10
 eps = {2:1.5, 4:2.5, 6:3, 8:3.5}
 delta = 1
 
-filepath = r'C:\Users\phung\OneDrive\Desktop\Statistic Machine Learning\Parametric DBSCAN\Multi-dimension\tprchangingd.txt'
+filepath = r'Multi-dimension\tprchangingd.txt'
         
 
 

@@ -72,7 +72,7 @@ def run_sioc(X, minpts, eps):
     return None
   selective_p_value = 2 * min(cdf, 1 - cdf)
   #print(selective_p_value)
-  filepath = r'C:\Users\phung\OneDrive\Desktop\Statistic Machine Learning\Parametric DBSCAN\Realdata\sioc.txt'
+  filepath = r'Realdata\sioc.txt'
         
   with open(filepath, 'a') as file:
       file.write(f'{selective_p_value}\n')

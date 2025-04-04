@@ -131,3 +131,9 @@ absence, minpts = 40, eps = 6, n = 200
 0.028078219389405135
 0.4942678242488334
 0.09151209733073817
+=======
+absense, minpts = 40, eps = 2, n = 200
+=======
+absense, minpts = 10, eps = 1.5, n = 200
+=======
+absense, minpts = 10, eps = 1.5, n = 200

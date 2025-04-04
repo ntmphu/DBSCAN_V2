@@ -270,7 +270,6 @@ def compute_z_interval(j_test, n, d, O_obs, eps, neps, a, c, zk, minusO, x_zk):
       #print(sparsity)
       
       if i in neps[j]:
-       
         A1_sparse.append(A_sparse)
       else:
         
@@ -295,8 +294,7 @@ def compute_z_interval(j_test, n, d, O_obs, eps, neps, a, c, zk, minusO, x_zk):
       if res == "No solution":
         print(p1[0][k][0], q1[0][k][0], t1[0][k][0])
       else:
-        trunc_interval = interval_intersection(trunc_interval,res)
-                
+        trunc_interval = interval_intersection(trunc_interval,res)      
       
 
     for k in range(len(A2_sparse)):
