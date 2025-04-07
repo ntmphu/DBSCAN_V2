@@ -20,7 +20,7 @@ minpts = 10
 eps = {2:1.5, 4:2.5, 6:3, 8:3.5}
 delta = 1
 
-filepath = r'Multi-dimension\tprchangingd.txt'
+
         
 
 
@@ -58,15 +58,13 @@ def tpr_si_oc():
 
         # Calculate the True Positive Rate (TPR)
         TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)
-        with open(filepath, 'a') as file:
-            file.write(f'd = {d}, TPR = {TPR}, count = {count}\n')
+       
         list_TPR.append(TPR)
     return list_TPR
     
 def tpr_parametric():
     list_TPR = []
-    with open(filepath, 'a') as file:
-            file.write(f'parametric\n')
+    
     for i, d in enumerate(list_d):
         number_of_true_positive = 0
         number_of_false_negative = 0
@@ -92,8 +90,7 @@ def tpr_parametric():
                         break
         # Calculate the True Positive Rate (TPR)
         TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)
-        with open(filepath, 'a') as file:
-            file.write(f'd = {d}, TPR = {TPR}, count = {count}\n')
+        
         list_TPR.append(TPR)
     return list_TPR
 def tpr_bonferroni():
@@ -129,17 +126,20 @@ def tpr_bonferroni():
 
         # Calculate the True Positive Rate (TPR)
         TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)
-        with open(filepath, 'a') as file:
-            file.write(f'd = {d}, TPR = {TPR}, count = {count}\n')
+       
         list_TPR.append(TPR)
     return list_TPR
 
 if __name__ == '__main__':
 
     
-    list_TPR_bonferroni = tpr_bonferroni()
-    list_TPR_SI_OC = tpr_si_oc()
     list_TPR_SI = tpr_parametric()
+    save_list_to_csv(list_TPR_SI, "saved_data/list_TPRchangingd_SI.csv")
+    list_TPR_bonferroni = tpr_bonferroni()
+    save_list_to_csv(list_TPR_bonferroni, "saved_data/list_TPRchangingd_bonferroni.csv")
+    list_TPR_SI_OC = tpr_si_oc()
+    save_list_to_csv(list_TPR_SI_OC, "saved_data/list_TPRchangingd_SI_OC.csv")
+
 
     fig, ax = plt.subplots()
 
