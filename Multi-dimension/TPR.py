@@ -9,7 +9,7 @@ from util import *
 
 
 
-max_iteration = 120
+max_iteration = 300
 Alpha = 0.05
 n = 50
 d = 10
@@ -44,6 +44,8 @@ def tpr_si_oc():
                             number_of_false_negative += 1
                         
                     count += 1
+                    if count == 120:
+                        break
 
         # Calculate the True Positive Rate (TPR)
         TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)
@@ -73,6 +75,8 @@ def tpr_parametric():
                             number_of_false_negative += 1
                         
                     count += 1
+                    if count == 120:
+                        break
 
         # Calculate the True Positive Rate (TPR)
         TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)
@@ -102,6 +106,8 @@ def tpr_bonferroni():
                             number_of_false_negative += 1
                         
                     count += 1
+                    if count == 120:
+                        break
 
         # Calculate the True Positive Rate (TPR)
         TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)

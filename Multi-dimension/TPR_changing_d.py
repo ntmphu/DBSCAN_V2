@@ -30,8 +30,7 @@ def run_wrapper(args):
     
 def tpr_si_oc():
     list_TPR = []
-    with open(filepath, 'a') as file:
-            file.write(f'sioc\n')
+   
     for i, d in enumerate(list_d):
         number_of_true_positive = 0
         number_of_false_negative = 0
@@ -94,9 +93,7 @@ def tpr_parametric():
         list_TPR.append(TPR)
     return list_TPR
 def tpr_bonferroni():
-    with open(filepath, 'a') as file:
-            file.write(f'bonferroni\n')
-
+    
     list_TPR = []
     p_max = mp.mpf(Alpha) / (2 ** n) 
     for i, d in enumerate(list_d):

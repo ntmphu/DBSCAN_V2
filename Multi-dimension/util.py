@@ -298,6 +298,7 @@ def compute_z_interval(j_test, n, d, O_obs, eps, neps, a, c, zk, minusO, x_zk):
         res = solve_quadratic_inequality(0, -Ba[j][0], -Bc[j][0])
         trunc_interval = interval_intersection(trunc_interval,res)
     return trunc_interval, S
+import csv
 def save_list_to_csv(data, filename):
     try:
         with open(filename, 'w', newline='') as f:

@@ -7,7 +7,7 @@ import multiprocessing
 from tqdm import tqdm 
 from util import *
 
-max_iteration = 120
+max_iteration = 300
 Alpha = 0.05
 list_n = [50, 100, 150, 200]
 d = 10
@@ -33,6 +33,8 @@ def fpr_parametric():
                     if p_value <= Alpha:
                         number_of_false_positive += 1
                     count += 1
+                    if count == 120:
+                        break
 
         # Calculate the False Positive Rate (FPR)c
         FPR = number_of_false_positive / count
@@ -53,6 +55,8 @@ def fpr_naive():
                     if p_value <= Alpha:
                         number_of_false_positive += 1
                     count += 1
+                    if count == 120:
+                        break
 
         # Calculate the False Positive Rate (FPR)
         FPR = number_of_false_positive / count
@@ -74,6 +78,8 @@ def fpr_bonferroni():
                     if p_value <= p_max:
                         number_of_false_positive += 1
                     count += 1
+                    if count == 120:
+                        break
 
         # Calculate the False Positive Rate (FPR)
         FPR = number_of_false_positive / count
@@ -104,13 +110,18 @@ def fpr_si_oc():
 
 
 if __name__ == '__main__':
-  
-    
-    
-    list_FPR_naive = fpr_naive()
-    list_FPR_bonferroni = fpr_bonferroni()
-    list_FPR_SI_OC = fpr_si_oc()
+
     list_FPR_SI = fpr_parametric()
+    save_list_to_csv(list_FPR_SI, 'list_FPR_SI.csv')
+
+    list_FPR_naive = fpr_naive()
+    save_list_to_csv(list_FPR_naive, 'list_FPR_naive.csv')
+
+    list_FPR_bonferroni = fpr_bonferroni()
+    save_list_to_csv(list_FPR_bonferroni, 'list_FPR_bonferroni.csv')
+
+    list_FPR_SI_OC = fpr_si_oc()
+    save_list_to_csv(list_FPR_SI_OC, 'list_FPR_SI_OC.csv')
     
     fig, ax = plt.subplots()
     
