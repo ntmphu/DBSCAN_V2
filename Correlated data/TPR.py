@@ -121,9 +121,11 @@ if __name__ == '__main__':
     
     
     list_TPR_SI = tpr_parametric()
+    save_list_to_csv(list_TPR_SI, "saved_data/list_TPR_SI.csv")
     list_TPR_bonferroni = tpr_bonferroni()
+    save_list_to_csv(list_TPR_bonferroni, "saved_data/list_TPR_bonferroni.csv")
     list_TPR_SI_OC = tpr_si_oc()
-    
+    save_list_to_csv(list_TPR_SI_OC, "saved_data/list_TPR_SI_OC.csv")
     fig, ax = plt.subplots()
 
     ax.plot(list_delta, list_TPR_SI, color = 'green', label = 'SI-CLAD')

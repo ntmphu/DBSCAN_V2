@@ -238,94 +238,68 @@ def interval_union(a, b):
             result.append(current)
     return result
   
+
 def compute_z_interval(j_test, n, d, O_obs, eps, neps, a, c, zk, minusO, x_zk):
-  #print(len(O), len(minusO))
-  I_d = np.identity(d)
-  
-  trunc_interval = [(-np.inf, np.inf)]
+    # Reshape a and c to (n, d) for easier indexing
+    a_2d = a.reshape(n, d, order='F')
+    c_2d = c.reshape(n, d, order='F')
+    b = eps * eps
+    trunc_interval = [(-np.inf, np.inf)]
 
-  for j in range(n):
-    #euclidean distance
-    A1_sparse = []
-    A2_sparse = []
-    for i in range(n):
-      e = np.zeros((1,n))
-      e[0][j] = 1
-      if i != j:
-        e[0][i] = -1
-      else:
-        continue
-      
-      Id_x_e = np.kron(I_d, e)
-      Id_x_e_sparse = csr_matrix(Id_x_e)
-      A_sparse = Id_x_e_sparse.T @ Id_x_e_sparse
-      #sparsity = 1.0 - ( np.count_nonzero(A) / float(A.size) )
-      #print(sparsity)
-      
-      if i in neps[j]:
-       
-        A1_sparse.append(A_sparse)
-      else:
+    # Quadratic constraints
+    for j in range(n):
+        # Compute differences for all i
+        diff_a = a_2d[j] - a_2d  # Shape: (n, d)
+        diff_c = c_2d[j] - c_2d  # Shape: (n, d)
         
-        A2_sparse.append(A_sparse)
+        # Convert neps[j] to set for O(1) lookup
+        neps_j = set(neps[j])
         
-    b = eps*eps
-    b = np.array(b).reshape(1, 1)
-    #print(a.shape, c.shape, z.shape)
-    p1 = np.array([a.T @ (Ai @ a) for Ai in A1_sparse]).reshape(1, -1, 1)
-    q1 = np.array([c.T @ (Ai @ a) + a.T @ (Ai @ c) for Ai in A1_sparse]).reshape(1,-1,1)
-    t1 = np.array([c.T @ (Ai @ c) - b for Ai in A1_sparse]).reshape(1,-1,1)
-
-    #print("p1", p1)
-    p2 = -1*(np.array([a.T @ (Ai @ a) for Ai in A2_sparse])).reshape(1, -1, 1)
-    q2 = -1*(np.array([c.T @ (Ai @ a) + a.T @ (Ai @ c) for Ai in A2_sparse])).reshape(1,-1,1)
-    t2 = -1*(np.array([c.T @ (Ai @ c) - b for Ai in A2_sparse])).reshape(1,-1,1)
-    #print("p2", p2)
-
-            
-    for k in range(len(A1_sparse)):
-      res = solve_quadratic_inequality(p1[0][k][0], q1[0][k][0], t1[0][k][0])
-      if res == "No solution":
-        print(p1[0][k][0], q1[0][k][0], t1[0][k][0])
-      else:
-        trunc_interval = interval_intersection(trunc_interval,res)
+        for i in range(n):
+            if i != j:
+                # Compute coefficients directly
+                p = np.sum(diff_a[i] ** 2)  # ||a_j - a_i||^2
+                q = 2 * np.dot(diff_a[i], diff_c[i])  # 2*(a_j - a_i)^T (c_j - c_i)
+                t = np.sum(diff_c[i] ** 2) - b  # ||c_j - c_i||^2 - b
                 
-      
+                if i in neps_j:
+                    # ||x_j - x_i||^2 <= b
+                    res = solve_quadratic_inequality(p, q, t)
+                else:
+                    # ||x_j - x_i||^2 >= b
+                    res = solve_quadratic_inequality(-p, -q, -t)
+                
+                if res != "No solution":
+                    trunc_interval = interval_intersection(trunc_interval, res)
 
-    for k in range(len(A2_sparse)):
-      res = solve_quadratic_inequality(p2[0][k][0], q2[0][k][0], t2[0][k][0])
-      if res == "No solution":
-        print(p2[0][k][0], q2[0][k][0], t2[0][k][0])
-      else:
+    # Linear constraints
+    I_d = np.identity(d)
+    eT_minusO = np.zeros((1, n))
+    eT_minusO[:, minusO] = 1
+    eT_mean_minusO = np.kron(I_d, eT_minusO) / len(minusO)
+    
+    e_j = np.zeros((1, n))
+    e_j[:, j_test] = 1
+    temp = np.kron(I_d, e_j) - eT_mean_minusO
+    
+    Xj_meanXminusO = temp @ x_zk
+    S = np.sign(Xj_meanXminusO)
+    B = np.multiply(S, temp)
+    Ba = np.dot(B, a)
+    Bc = np.dot(B, c)
+    
+    #print(Ba.shape, Bc.shape)
+    for j in range (Ba.shape[0]):
+        res = solve_quadratic_inequality(0, -Ba[j][0], -Bc[j][0])
         trunc_interval = interval_intersection(trunc_interval,res)
-
-
- 
-
-  eT_minusO = np.zeros((1, n))
-  eT_minusO[:,minusO] = 1
-
-  #print(X)
-  #print(x)
-  
-  eT_mean_minusO = np.kron(I_d, eT_minusO)/len(minusO)
-  #print(np.dot(eT_mean_minusO, x), np.mean(X[minusO], axis = 0))
-
-  e_j = np.zeros((1, n))
-  e_j[:, j_test] = 1
-  temp = np.kron(I_d, e_j) - eT_mean_minusO
-  Xj_meanXminusO = np.dot(temp, x_zk)
-  #print(Xj_meanXminusO, X[j] - np.mean(X[minusO], axis = 0))
-
-  S = np.sign(Xj_meanXminusO)
-  #print(S)
-  B = np.multiply(S, temp)
-  Ba = np.dot(B, a)
-  Bc = np.dot(B, c)
- 
-  #print(Ba.shape, Bc.shape)
-  for j in range (Ba.shape[0]):
-    res = solve_quadratic_inequality(0, -Ba[j][0], -Bc[j][0])
-    trunc_interval = interval_intersection(trunc_interval,res)
-  return trunc_interval, S
+    return trunc_interval, S
+import csv
+def save_list_to_csv(data, filename):
+    try:
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+        print(f"Saved {filename} successfully.")
+    except Exception as e:
+        print(f"Error saving {filename}: {str(e)}")
   

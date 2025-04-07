@@ -234,70 +234,6 @@ def interval_union(a, b):
         else:
             result.append(current)
     return result
-def compute_z_interval(n, O_obs, eps, neps, a, c, zk):
-  #compute A1, A2, b: yT.A1.y <= b; yT.A2.y > b
-  trunc_interval = [(-np.inf, np.inf)]
-  for j in range(n):
-    A1 = []
-    A2 = []
-    for i in range(n):
-        e = np.zeros((1,n))
-        e[0][j] = 1
-        if i in neps[j]:
-          if i != j:
-            e[0][i] = -1
-          else:
-            e[0][j] = 0
-          A1.append(np.dot(e.T, e))
-        else:
-          if i != j:
-            e[0][i] = -1
-          else:
-            e[0][j] = 0
-          A2.append(np.dot(e.T, e))
-
-    A1 = np.array(A1)
-    A2 = np.array(A2)
-
-    #print(z)
-    b = eps*eps
-
-
-    p1 = np.dot(a.T, np.dot(A1, a))
-    q1 = np.dot(c.T, np.dot(A1, a)) + np.dot(a.T, np.dot(A1, c))
-    t1 = np.dot(c.T, np.dot(A1, c)) - b
-    #print(p1.shape,q1.shape,t1.shape)
-    #print("p1", p1)
-    p2 = -1*(np.dot(a.T, np.dot(A2, a)))
-    q2 = -1*(np.dot(c.T, np.dot(A2, a)) + np.dot(a.T, np.dot(A2, c)))
-    t2 = -1*(np.dot(c.T, np.dot(A2, c)) - b)
-    #print("p2", p2)
-
-
-    #   yTA1y = (x_i - x_j)^2  <= eps^2
-    #p>0
-    for k in range(A1.shape[0]):
-      res = solve_quadratic_inequality(p1[0][k][0], q1[0][k][0], t1[0][k][0])
-      if res == "No solution":
-        print(p1[0][k][0], q1[0][k][0], t1[0][k][0])
-                #continue
-            #elif res[0][0] == -np.inf and res[0][1] == np.inf:
-             #   continue
-                #print(p, q, t, i, k) 
-      else:
-        trunc_interval = interval_intersection(trunc_interval,res)
-                
-      
-
-    for k in range(A2.shape[0]):
-      res = solve_quadratic_inequality(p2[0][k][0], q2[0][k][0], t2[0][k][0])
-      if res == "No solution":
-        print(p2[0][k][0], q2[0][k][0], t2[0][k][0])
-             
-      else:
-        trunc_interval = interval_intersection(trunc_interval,res)
-
-  return trunc_interval
 
 def generate_trueoutliers(n, delta):
     u = np.zeros((n, 1))
@@ -307,3 +243,46 @@ def generate_trueoutliers(n, delta):
     noise = np.random.normal(loc=0, scale=1, size=n)
     y = u + noise.reshape(-1, 1)
     return y, true_outliers
+
+
+def compute_z_interval(n, O_obs, eps, neps, a, c, zk):
+    # Initialize the interval for z
+    trunc_interval = [(-np.inf, np.inf)]
+    b = eps * eps  # Scalar threshold
+    a = a.flatten()
+    c = c.flatten()
+    # Assume a and c are 1D NumPy arrays of length n
+    for j in range(n):
+        # Vectorized differences for all i
+        diff_a = a[j] - a  # Shape: (n,)
+        diff_c = c[j] - c  # Shape: (n,)
+        
+        for i in range(n):
+            if i != j:
+                # Compute coefficients directly
+                p = diff_a[i] ** 2
+                q = 2 * diff_a[i] * diff_c[i]
+                t = diff_c[i] ** 2 - b
+                
+                if i in neps[j]:
+                    # Solve p*z² + q*z + t <= 0
+                    res = solve_quadratic_inequality(p, q, t)
+                else:
+                    # Solve -p*z² - q*z - t <= 0 (i.e., p*z² + q*z + t >= 0)
+                    res = solve_quadratic_inequality(-p, -q, -t)
+                
+                if res != "No solution":
+                    trunc_interval = interval_intersection(trunc_interval, res)
+    
+    return trunc_interval
+
+import csv
+def save_list_to_csv(data, filename):
+    try:
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(data.keys())   # First row: keys
+            writer.writerow(data.values()) # Second row: values
+        print(f"Saved {filename} successfully.")
+    except Exception as e:
+        print(f"Error saving {filename}: {str(e)}")

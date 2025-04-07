@@ -58,6 +58,6 @@ def plot_fpr(list_FPR, list_n, list_alpha, dist_name):
 if __name__ == '__main__':
   
     list_FPR_estimate = fpr_parametric_estimate()
-
+    save_list_to_csv(list_FPR_estimate, "estimated.csv")
     # Example of how to call this function with your FPR dictionaries
     plot_fpr(list_FPR_estimate, list_n, list_alpha, 'estimated sigma')

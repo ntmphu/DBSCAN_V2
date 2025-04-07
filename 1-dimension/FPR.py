@@ -101,37 +101,51 @@ def fpr_si_oc():
     return list_FPR
 
 
-if __name__ == '__main__':
-  
-    
-    list_FPR_SI = fpr_parametric()
-    list_FPR_naive = fpr_naive()
-    list_FPR_bonferroni = fpr_bonferroni()
-    list_FPR_SI_OC = fpr_si_oc()
-    
-    fig, ax = plt.subplots()
+import csv
+import os
 
-    ax.plot(list_n, list_FPR_SI, color = 'green', label = 'SI-CLAD')
-    ax.scatter(list_n, list_FPR_SI, color = 'green')
-    ax.plot(list_n, list_FPR_SI_OC, color = 'orange', label = 'SI-CLAD-oc')
-    ax.scatter(list_n, list_FPR_SI_OC, color = 'orange')
-    ax.plot(list_n, list_FPR_bonferroni, color = 'blue', label = 'Bonferroni')
-    ax.scatter(list_n, list_FPR_bonferroni, color = 'blue')
-    ax.plot(list_n, list_FPR_naive, color = 'red', label = 'Naive')
-    ax.scatter(list_n, list_FPR_naive, color = 'red')
-    
-    
-    
+# Define a function to save lists safely
+def save_list_to_csv(data, filename):
+    try:
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+        print(f"Saved {filename} successfully.")
+    except Exception as e:
+        print(f"Error saving {filename}: {str(e)}")
+
+if __name__ == '__main__':
+    # Generate and save each list immediately
+    list_FPR_SI = fpr_parametric()
+    save_list_to_csv(list_FPR_SI, 'list_FPR_SI.csv')
+
+    list_FPR_naive = fpr_naive()
+    save_list_to_csv(list_FPR_naive, 'list_FPR_naive.csv')
+
+    list_FPR_bonferroni = fpr_bonferroni()
+    save_list_to_csv(list_FPR_bonferroni, 'list_FPR_bonferroni.csv')
+
+    list_FPR_SI_OC = fpr_si_oc()
+    save_list_to_csv(list_FPR_SI_OC, 'list_FPR_SI_OC.csv')
+
+    # Rest of your plotting code
+    fig, ax = plt.subplots()
+    ax.plot(list_n, list_FPR_SI, color='green', label='SI-CLAD')
+    ax.scatter(list_n, list_FPR_SI, color='green')
+    ax.plot(list_n, list_FPR_SI_OC, color='orange', label='SI-CLAD-oc')
+    ax.scatter(list_n, list_FPR_SI_OC, color='orange')
+    ax.plot(list_n, list_FPR_bonferroni, color='blue', label='Bonferroni')
+    ax.scatter(list_n, list_FPR_bonferroni, color='blue')
+    ax.plot(list_n, list_FPR_naive, color='red', label='Naive')
+    ax.scatter(list_n, list_FPR_naive, color='red')
     
     list_FPR_no_inference = [1,1,1,1]
-    ax.plot(list_n, list_FPR_no_inference, color = 'purple', label = 'No-Inference')
-    ax.scatter(list_n, list_FPR_no_inference, color = 'purple')
+    ax.plot(list_n, list_FPR_no_inference, color='purple', label='No-Inference')
+    ax.scatter(list_n, list_FPR_no_inference, color='purple')
     
     ax.set_xticks(list_n)
     ax.set_ylim(-0.05,1.05)
-    
-    ax.legend(loc = 'upper right')
+    ax.legend(loc='upper right')
     plt.xlabel("Sample size (n)")
     plt.ylabel("FPR")
-    
     plt.savefig("1-dimension-fpr.png", dpi=300, bbox_inches='tight')

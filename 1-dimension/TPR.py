@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from multiprocessing import Pool
 from tqdm import tqdm 
 from util import *
+import csv
+import os
 
 max_iteration = 500
 Alpha = 0.05
@@ -116,13 +118,24 @@ def tpr_bonferroni():
         TPR = number_of_true_positive / (number_of_true_positive + number_of_false_negative)
         list_TPR.append(TPR)
     return list_TPR
+def save_list_to_csv(data, filename):
+    try:
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+        print(f"Saved {filename} successfully.")
+    except Exception as e:
+        print(f"Error saving {filename}: {str(e)}")
 
 if __name__ == '__main__':
   
     
     list_TPR_SI = tpr_si()
+    save_list_to_csv(list_TPR_SI, "saved_data/list_TPR_SI.csv")
     list_TPR_bonferroni = tpr_bonferroni()
+    save_list_to_csv(list_TPR_bonferroni, "saved_data/list_TPR_bonferroni.csv")
     list_TPR_SI_OC = tpr_si_oc()
+    save_list_to_csv(list_TPR_SI_OC, "saved_data/list_TPR_SI_OC.csv")
 
 
     fig, ax = plt.subplots()
@@ -147,4 +160,4 @@ if __name__ == '__main__':
     plt.xlabel("delta")
     plt.ylabel("TPR")
     
-    plt.savefig("1-dimension-fpr.png", dpi=300, bbox_inches='tight')
+    plt.savefig("1-dimension-TPR.png", dpi=300, bbox_inches='tight')

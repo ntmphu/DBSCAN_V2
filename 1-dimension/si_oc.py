@@ -31,6 +31,7 @@ def run_sioc(n):
   etaT_Sigma_eta=np.dot(np.dot(eta.T, Sigma), eta)
   a = np.dot(np.dot(Sigma, eta), np.linalg.inv(etaT_Sigma_eta))
   c = np.dot(np.identity(n) - np.dot(a, eta.T), y)
+
   z = np.dot(etaT, y)[0][0]
   intersection = compute_z_interval(n, O, eps, neps, a, c, z)
   mu = np.dot(etaT, np.zeros((n,1)))[0][0]
@@ -41,6 +42,7 @@ def run_sioc(n):
 
   selective_p_value = 2 * min(cdf, 1 - cdf)
   return selective_p_value
+
 
 def run_sioc_TPR(args):
   n, delta = args

@@ -101,8 +101,11 @@ def plot_fpr(list_FPR, list_n, list_alpha, dist_name):
 if __name__ == '__main__':
   
     list_FPR_skewnorm = fpr_parametric_skewnorm()
+    save_list_to_csv(list_FPR_skewnorm, "data_saved/list_FPR_skewnorm.csv")
     list_FPR_laplace = fpr_parametric_laplace()
+    save_list_to_csv(list_FPR_laplace, "data_saved/list_FPR_laplace.csv")
     list_FPR_t20 = fpr_parametric_t20()
+    save_list_to_csv(list_FPR_t20, "data_saved/list_FPR_t20.csv")
 
     # Example of how to call this function with your FPR dictionaries
     plot_fpr(list_FPR_skewnorm, list_n, list_alpha, 'Skew Normal')

@@ -114,9 +114,16 @@ def fpr_si_oc():
 
 if __name__ == '__main__':
     list_FPR_SI = fpr_parametric()
+    save_list_to_csv(list_FPR_SI, 'list_FPRchangingrho_SI.csv')
+
     list_FPR_naive = fpr_naive()
+    save_list_to_csv(list_FPR_naive, 'list_FPRchangingrho_SI_naive.csv')
+
     list_FPR_bonferroni = fpr_bonferroni()
+    save_list_to_csv(list_FPR_bonferroni, 'list_FPRchangingrho_SI_bonferroni.csv')
+
     list_FPR_SI_OC = fpr_si_oc()
+    save_list_to_csv(list_FPR_SI_OC, 'list_FPRchangingrho_SI_SI_OC.csv')
     
     fig, ax = plt.subplots()
     

@@ -29,6 +29,9 @@ def changing_d():
         
 
     # Plotting the results using Seaborn
+    save_list_to_csv(times, "time_changing_d.csv")
+    save_list_to_csv(len_intervals, "inteval_changing_d.csv")
+    
     data_time = [times[d] for d in d_values]
     data_interval = [len_intervals[d] for d in d_values]
     fig, axes  = plt.subplots(1, 2, figsize=(12, 6))
@@ -73,7 +76,8 @@ def changing_n():
                 times[n].append(end_time - start_time)
                 num_runs += 1
                 len_intervals[n].append(encountered_interval)
-        
+    save_list_to_csv(times, "time_changing_n.csv")
+    save_list_to_csv(len_intervals, "inteval_changing_n.csv")
 
     # Plotting the results using Seaborn
     data_time = [times[n] for n in n_values]

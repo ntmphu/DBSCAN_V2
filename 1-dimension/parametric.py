@@ -119,7 +119,7 @@ def run_parametric(n):
       print("err", z_k[i], z_interval[i])
   #print(new_z_interval)
   etaTy = np.dot(etaT, y)
-  mu = np.dot(etaT, np.zeros((n,1)))[0][0]
+  mu = 0
   cdf = pivot_with_specified_interval(new_z_interval, eta, etaTy[0][0], Sigma, mu)
   #print(z, new_z_interval)
   if cdf is None:

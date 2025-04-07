@@ -119,8 +119,11 @@ def tpr_bonferroni():
 if __name__ == '__main__':
     
     list_TPR_SI = tpr_parametric()
+    save_list_to_csv(list_TPR_SI, "saved_data/list_TPRchangingrho_SI.csv")
     list_TPR_bonferroni = tpr_bonferroni()
+    save_list_to_csv(list_TPR_bonferroni, "saved_data/list_TPRchangingrho_bonferroni.csv")
     list_TPR_SI_OC = tpr_si_oc()
+    save_list_to_csv(list_TPR_SI_OC, "saved_data/list_TPR_SIchangingrho_OC.csv")
     
     fig, ax = plt.subplots()
 
