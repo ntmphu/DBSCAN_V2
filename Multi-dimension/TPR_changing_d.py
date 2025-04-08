@@ -141,14 +141,11 @@ if __name__ == '__main__':
     fig, ax = plt.subplots()
 
     ax.plot(list_d, list_TPR_SI, color = 'green', label = 'SI-CLAD')
-    ax.plot(list_d, list_TPR_SI_OC, color = 'orange', label = 'SI-CLAD-oc')
-    ax.plot(list_d, list_TPR_bonferroni, color = 'blue', label = 'Bonferroni')
-    
-    # Add scatter points on each line
     ax.scatter(list_d, list_TPR_SI, color='green')
+    ax.plot(list_d, list_TPR_SI_OC, color = 'orange', label = 'SI-CLAD-oc')
     ax.scatter(list_d, list_TPR_SI_OC, color='orange')
+    ax.plot(list_d, list_TPR_bonferroni, color = 'blue', label = 'Bonferroni')
     ax.scatter(list_d, list_TPR_bonferroni, color='blue')
-    
     ax.set_xticks(list_d)
     ax.set_ylim(-0.05,1.05)
     ax.legend(loc = 'upper right')

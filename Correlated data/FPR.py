@@ -126,23 +126,18 @@ if __name__ == '__main__':
     save_list_to_csv(list_FPR_SI_OC, 'list_FPR_SI_OC.csv')
     
     fig, ax = plt.subplots()
-    
-
-    ax.plot(list_n, list_FPR_SI, color = 'green', label = 'SI-CLAD')
-    ax.plot(list_n, list_FPR_SI_OC, color = 'orange', label = 'SI-CLAD-oc')
-    ax.plot(list_n, list_FPR_bonferroni, color = 'blue', label = 'Bonferroni')
-    ax.plot(list_n, list_FPR_naive, color = 'red', label = 'Naive')
+    ax.plot(list_n, list_FPR_SI, color='green', label='SI-CLAD')
+    ax.scatter(list_n, list_FPR_SI, color='green')
+    ax.plot(list_n, list_FPR_SI_OC, color='orange', label='SI-CLAD-oc')
+    ax.scatter(list_n, list_FPR_SI_OC, color='orange')
+    ax.plot(list_n, list_FPR_bonferroni, color='blue', label='Bonferroni')
+    ax.scatter(list_n, list_FPR_bonferroni, color='blue')
+    ax.plot(list_n, list_FPR_naive, color='red', label='Naive')
+    ax.scatter(list_n, list_FPR_naive, color='red')
     
     list_FPR_no_inference = [1,1,1,1]
-    ax.plot(list_n, list_FPR_no_inference, color = 'purple', label = 'No-Inference')
-    ax.scatter(list_n, list_FPR_no_inference, color = 'purple')
-    
-
-
-    ax.scatter(list_n, list_FPR_SI, color = 'green')
-    ax.scatter(list_n, list_FPR_naive, color = 'red')
-    ax.scatter(list_n, list_FPR_bonferroni, color = 'blue')
-    ax.scatter(list_n, list_FPR_SI_OC, color = 'orange')
+    ax.plot(list_n, list_FPR_no_inference, color='purple', label='No-Inference')
+    ax.scatter(list_n, list_FPR_no_inference, color='purple')
 
     
     
