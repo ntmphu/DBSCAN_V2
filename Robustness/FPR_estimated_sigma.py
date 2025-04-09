@@ -4,7 +4,8 @@ from multiprocessing import Pool
 from tqdm import tqdm 
 from util import *
 
-max_iteration = 500 #actually 120
+max_iteration = 1000
+max_count = 500
 
 list_alpha = [0.05, 0.1]
 list_n = [50, 100, 150, 200]
@@ -28,7 +29,7 @@ def fpr_parametric_estimate():
                         if p_value <= Alpha:
                             number_of_false_positive += 1
                         count += 1
-                        if count == 120:
+                        if count == max_count:
                             break
                             
             # Calculate the False Positive Rate (FPR)

@@ -242,7 +242,7 @@ def run_wrapper(args):
 
 if __name__ == '__main__':
 
-    max_iteration = 500
+    max_iteration = 150
     n = 50
     d = 10
     minpts = 10

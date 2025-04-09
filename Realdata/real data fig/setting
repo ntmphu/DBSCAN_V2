@@ -15,4 +15,4 @@ eps = 3
 =======
 absence, minpts = 40, eps = 6, 
 n = 200
-d = 2020
+d = 20

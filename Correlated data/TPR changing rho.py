@@ -11,11 +11,12 @@ num_cores = multiprocessing.cpu_count()
 num_workers = num_cores
 
 max_iteration = 1000
+max_count = 500
 Alpha = 0.05
 n = 100
-d = 10
+d = 5
 minpts = 10
-eps = 3
+eps = 1.25
 delta = 2
 list_rho = [0.2, 0.4, 0.6, 0.8]
 
@@ -46,7 +47,7 @@ def tpr_si_oc():
                             number_of_false_negative += 1
                         
                     count += 1
-                    if count == 120:
+                    if count == max_count:
                         break
 
         # Calculate the True Positive Rate (TPR)
@@ -77,7 +78,7 @@ def tpr_parametric():
                             number_of_false_negative += 1
                         
                     count += 1
-                    if count == 120:
+                    if count == max_count:
                         break
 
         # Calculate the True Positive Rate (TPR)
@@ -108,7 +109,7 @@ def tpr_bonferroni():
                             number_of_false_negative += 1
                         
                     count += 1
-                    if count == 120:
+                    if count == max_count:
                         break
 
         # Calculate the True Positive Rate (TPR)

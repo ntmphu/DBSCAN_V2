@@ -51,7 +51,8 @@ def run_wrapper(args):
     return func(data_subset, minpts, eps)
 
 if __name__ == '__main__':
-    max_iteration = 200
+    max_iteration = 1000
+    max_count = 500
     n = 200
     
     
@@ -66,7 +67,7 @@ if __name__ == '__main__':
         for selective_p_value in tqdm(pool.imap_unordered(run_wrapper, args_sioc), total=max_iteration):
             if selective_p_value is not None:
                 list_sioc_pvalue.append(selective_p_value)
-                if len(list_sioc_pvalue) == 120:
+                if len(list_sioc_pvalue) == max_count:
                     break
     save_list_to_csv(list_sioc_pvalue, f"saved_data/{fig_name}_sioc.csv")
     
@@ -74,7 +75,7 @@ if __name__ == '__main__':
         for selective_p_value in tqdm(pool.imap_unordered(run_wrapper, args_parametric), total=max_iteration):
             if selective_p_value is not None:
                 list_parametric_pvalue.append(selective_p_value)
-                if len(list_parametric_pvalue)  == 120:
+                if len(list_parametric_pvalue)  == max_count:
                     break
     save_list_to_csv(list_parametric_pvalue, f"saved_data/{fig_name}_parametric.csv")
     # Boxplot with direct plt commands

@@ -215,63 +215,7 @@ def interval_union(a, b):
         else:
             result.append(current)
     return result
-"""
-def compute_z_interval(n, O_obs, eps, neps, a, c, zk):
-  #compute A1, A2, b: yT.A1.y <= b; yT.A2.y > b
-    trunc_interval = [(-np.inf, np.inf)]
-    A1 = []
-    A2 = []
-    for j in range(n):
-        for i in range(n):
-            e = np.zeros((1,n))
-            e[0][j] = 1
-            if i in neps[j]:
-                if i != j:
-                    e[0][i] = -1        
-                    A1.append(np.dot(e.T, e))
-            else:
-                if i != j:
-                    e[0][i] = -1
-                    A2.append(np.dot(e.T, e))
 
-    A1 = np.array(A1)
-    A2 = np.array(A2)
-
-    #print(z)
-    b = eps*eps
-
-
-    p1 = np.dot(a.T, np.dot(A1, a))
-    q1 = np.dot(c.T, np.dot(A1, a)) + np.dot(a.T, np.dot(A1, c))
-    t1 = np.dot(c.T, np.dot(A1, c)) - b
-    #print(p1.shape,q1.shape,t1.shape)
-    #print("p1", p1)
-    p2 = -1*(np.dot(a.T, np.dot(A2, a)))
-    q2 = -1*(np.dot(c.T, np.dot(A2, a)) + np.dot(a.T, np.dot(A2, c)))
-    t2 = -1*(np.dot(c.T, np.dot(A2, c)) - b)
-    #print("p2", p2)
-
-
-    #   yTA1y = (x_i - x_j)^2  <= eps^2
-    #p>0
-    for k in range(A1.shape[0]):
-        res = solve_quadratic_inequality(p1[0][k][0], q1[0][k][0], t1[0][k][0])
-        if res == "No solution":
-            print(p1[0][k][0], q1[0][k][0], t1[0][k][0])
-        else:
-            trunc_interval = interval_intersection(trunc_interval,res)      
-
-    for k in range(A2.shape[0]):
-        res = solve_quadratic_inequality(p2[0][k][0], q2[0][k][0], t2[0][k][0])
-        if res == "No solution":
-            print(p2[0][k][0], q2[0][k][0], t2[0][k][0])         
-        else:
-            trunc_interval = interval_intersection(trunc_interval,res)
-
-    return trunc_interval
-import numpy as np
-from scipy.sparse import csr_matrix  # Not needed anymore, kept for compatibility
-"""
 def compute_z_interval(n, O_obs, eps, neps, a, c, zk):
     # Initialize the interval for z
     trunc_interval = [(-np.inf, np.inf)]
