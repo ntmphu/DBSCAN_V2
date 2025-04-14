@@ -4,15 +4,15 @@ n = 200
 minpts = 26
 eps = 4
 d = 13 (drop label)
-
+=======
 breast cancer
-max_iteration = 120
-n = 150
+max_iteration = 300
+n = 200
 d = 15 (random selected)
-minpts = 30
-eps = 3
+minpts = 2*d
+eps = 5
 
 =======
 absence, minpts = 40, eps = 6, 
 n = 200
-d = 2020
+d = 20
