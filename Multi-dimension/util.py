@@ -13,9 +13,9 @@ def generate_trueoutliers(n, d, delta):
   V = np.identity(d)
 
   M_index = np.array(range(n))
-  true_outliers = np.random.choice(M_index, size=(n//5), replace=False)
+  true_outliers = np.random.choice(M_index, size=(n//3), replace=False)
   M[true_outliers] += delta
-  X = M + stats.matrix_normal.rvs(mean=M, rowcov=U, colcov=V)
+  X = np.zeros((n, d)) + stats.matrix_normal.rvs(mean=M, rowcov=U, colcov=V)
   Sigma = np.kron(V,U)
   return X, u, Sigma, true_outliers
 def generate(n, d):
@@ -132,7 +132,13 @@ def pivot_with_specified_interval(z_interval, etaj, etajTy, cov, tn_mu):
             numerator = numerator + mp.ncdf((ar - tn_mu)/tn_sigma) - mp.ncdf((al - tn_mu)/tn_sigma)
         elif (etajTy >= al) and (etajTy < ar):
             numerator = numerator + mp.ncdf((etajTy - tn_mu)/tn_sigma) - mp.ncdf((al - tn_mu)/tn_sigma)
-        
+        #print(f"al: {al}, ar: {ar}, tn_mu: {tn_mu}, tn_sigma: {tn_sigma}")
+        #print(f"numerator: {round(numerator,10)}, denominator: {round(denominator,10)}")
+        #print(f"etaTy: {etajTy}, interval: {z_interval}")
+        cdf_al = mp.ncdf((al - tn_mu) / tn_sigma)
+        cdf_ar = mp.ncdf((ar - tn_mu) / tn_sigma)
+
+        #print(f"CDF(al): {round(cdf_al,10)}, CDF(ar): {round(cdf_ar,10)}")
     if denominator != 0:
         return float(numerator/denominator)
     else:
@@ -157,7 +163,7 @@ def solve_quadratic_inequality(a, b, c,seed = 0):
         # print(f"b: {b}")
         if b > 0:
             # return [(-np.inf, -c / b)]
-            return [(-np.inf, -c / b, 8)]
+            return [(-np.inf, np.around(-c / b, 8))]
         elif b == 0:
             # print(f"c: {c}")
             if c <= 0:
@@ -166,7 +172,7 @@ def solve_quadratic_inequality(a, b, c,seed = 0):
                 print('Error bx + c', seed)
                 return 
         else:
-            return [(-c / b, 8, np.inf)]
+            return [(np.around(-c / b, 8), np.inf)]
     delta = b*b - 4*a*c
     if delta < 0:
         if a < 0:
@@ -177,7 +183,10 @@ def solve_quadratic_inequality(a, b, c,seed = 0):
     # print(f"2a: {2*a}")
     x1 = (- b - np.sqrt(delta)) / (2*a)
     x2 = (- b + np.sqrt(delta)) / (2*a)
-
+    # if x1 > x2:
+    #     x1, x2 = x2, x1  
+    x1 = np.around(x1, 8)
+    x2 = np.around(x2, 8)
     if a < 0:
         return [(-np.inf, x2),(x1, np.inf)]
     return [(x1,x2)]
@@ -292,7 +301,7 @@ def compute_z_interval(j_test, n, d, O_obs, eps, neps, a, c, zk, minusO, x_zk):
 import csv
 def save_list_to_csv(data, filename):
     try:
-        with open(filename, 'a', newline='') as f:
+        with open(filename, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(data)
         print(f"Saved {filename} successfully.")

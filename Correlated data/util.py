@@ -12,9 +12,9 @@ def generate_correlated_data(n, d, delta, rho):
   u = vec(M)
   U = np.identity(n)
   V = np.array([[rho**abs(i-j) for j in range(d)] for i in range(d)])
-
+  
   M_index = np.array(range(n))
-  true_outliers = np.random.choice(M_index, size=5, replace=False)
+  true_outliers = np.random.choice(M_index, size=n//3, replace=False)
   M[true_outliers] += delta
   
   

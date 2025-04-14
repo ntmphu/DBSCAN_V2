@@ -18,11 +18,10 @@ eps = 3
 
 
 def run_wrapper(args):
-        n, d, minpts, eps, method = args
-        return method(n, d, minpts, eps)
+    n, d, minpts, eps, method = args
+    return method(n, d, minpts, eps)
     
 def fpr_parametric():
-    
     list_FPR = []
     for n in list_n:
         args = [(n, d, minpts, eps, run_parametric) for _ in range(max_iteration)]
