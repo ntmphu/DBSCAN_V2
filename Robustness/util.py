@@ -1,6 +1,6 @@
 import numpy as np
 from mpmath import mp
-from scipy.stats import skewnorm, t
+from scipy.stats import skewnorm, t, laplace
 mp.dps = 500
 def dbscan_inner(is_core, neighborhoods, labels):
     label_num = 0
@@ -95,24 +95,29 @@ def generate(n):
     noise = np.random.normal(loc=0, scale=1, size=n)
     y = u + noise.reshape(-1, 1)
     return y
-def generate_skewnorm(n):
-    u = np.zeros((n, 1))
-    noise = skewnorm.rvs(a=10, size=n)  # shape parameter (a) = 10
-    y = u + noise.reshape(-1, 1)
-    return y
-  
-def generate_t20(n):
-    u = np.zeros((n, 1))
-    noise = t.rvs(df=20, size=n)  # df=20 sets the degrees of freedom to 20
-    y = u + noise.reshape(-1, 1)
-    return y
 
-def generate_laplace(n):
-    u = np.zeros((n, 1))
-    noise = np.random.laplace(loc=0, scale=1, size=n)  # loc=0 and scale=1 are the default parameters
-    y = u + noise.reshape(-1, 1)
-    return y
-  
+
+def generate_laplace(n, loc=0, scale=1):
+    raw = laplace.rvs(loc=loc, scale=scale, size=n)
+    m = laplace.mean(loc=loc, scale=scale)
+    s = laplace.std(loc=loc, scale=scale)
+    x = (raw - m) / s
+    return x.reshape(-1, 1)
+
+def generate_skewnorm(n, a=10, loc=0, scale=1):
+    raw = skewnorm.rvs(a=a, loc=loc, scale=scale, size=n)
+    m = skewnorm.mean(a=a, loc=loc, scale=scale)
+    s = skewnorm.std(a=a, loc=loc, scale=scale)
+    x = (raw - m) / s
+    return x.reshape(-1, 1)
+
+def generate_t20(n, df=20, loc=0, scale=1):
+    raw = t.rvs(df=df, loc=loc, scale=scale, size=n)
+    m = t.mean(df=df, loc=loc, scale=scale)
+    s = t.std(df=df, loc=loc, scale=scale)
+    x = (raw - m) / s
+    return x.reshape(-1, 1)
+
 def pivot_with_specified_interval(z_interval, etaj, etajTy, cov, tn_mu):
     tn_sigma = np.sqrt(np.dot(np.dot(etaj.T, cov), etaj))[0][0]
 

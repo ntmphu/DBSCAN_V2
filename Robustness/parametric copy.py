@@ -18,23 +18,12 @@ def run_parametric_dbscan(n, O_obs, minpts, eps, threshold, a, c):
     label_zk, neps_zk = dbscan_sk(a*zk + c, minpts, eps)
     setofOutliers =  [i for i in range(len(label_zk)) if label_zk[i] == -1]
     list_setofOutliers.append(setofOutliers)
-    #if zk == -threshold:
-     # label_test, neps_test = dbscan_sk(a*zk + c, minpts, eps)
-      #setofOutliers =  [i for i in range(len(label_test)) if label_test[i] == -1]
-      #print(label_test)
-      #print(neps_test)
-
+  
     intersection = compute_z_interval(n, O_obs, eps, neps_zk, a, c, zk)
-    #print(zk, intersection)
-       #[(interval1), (interval2)]
-    #print(zk, intersection)
-    #next_zk = zk
+    
     for each_interval in intersection:
       if each_interval[0] <= zk <= each_interval[1]:
-        #if each_interval[0] < list_zk[-1]:
-         # print("err", each_interval[0] - list_zk[-1])
-          #if each_interval[0] - list_zk[-1] == -float('inf'):
-           # print(zk, each_interval)
+    
         next_zk = each_interval[1]
         list_interval.append([each_interval[0], each_interval[1]])
         break
@@ -51,7 +40,7 @@ def run_parametric_dbscan(n, O_obs, minpts, eps, threshold, a, c):
 
 
 def run_parametric(n, gen_func):
-  y = gen_func(n)
+  y, Sigma = gen_func(n)
   eps = 0.2
   minpts = 5
   threshold = 20
@@ -78,8 +67,9 @@ def run_parametric(n, gen_func):
   eta = np.transpose(etaT)
 
   #compute a, c: y = az + c
-  Sigma = np.identity(n) #cov
+  #Sigma = np.identity(n) #cov
   etaT_Sigma_eta=np.dot(np.dot(eta.T, Sigma), eta)
+  threshold = 20*etaT_Sigma_eta[0][0]
   a = np.dot(np.dot(Sigma, eta), np.linalg.inv(etaT_Sigma_eta))
   c = np.dot(np.identity(n) - np.dot(a, eta.T), y)
 
@@ -225,7 +215,7 @@ if __name__ == "__main__":
     Alpha = 0.05
     count = 0
     n = 50
-    args = [(n, generate_laplace) for _ in range(max_iteration)]
+    args = [(n, generate_skewnorm) for _ in range(max_iteration)]
     
     # Khởi tạo Pool và chạy các tính toán song song
     with Pool(initializer=np.random.seed) as pool:
@@ -240,7 +230,7 @@ if __name__ == "__main__":
     count = sum(1 for p_value in list_p_value if p_value <= Alpha)
 
     # Tính và in False positive rate
-    print('\nFalse positive rate:', count / max_iteration)
+    print('\nFalse positive rate:', count / len(list_p_value), len(list_p_value))
 
     # Kiểm định thống kê
     print(stats.kstest(list_p_value, stats.uniform(loc=0.0, scale=1.0).cdf))

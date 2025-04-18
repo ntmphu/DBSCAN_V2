@@ -34,11 +34,13 @@ def load_breast():
     return data
 
 
-data = load_abs()
-fig_name = "absense"
-d = 20
-minpts = 2 * d
-eps = 6
+data = load_breast()
+fig_name = "breast_cancer"
+n = 200
+d = 15
+minpts = 2*d
+eps = 5
+
 
 scaler = StandardScaler()
 data_scaled = scaler.fit_transform(data)
@@ -51,8 +53,12 @@ def run_wrapper(args):
     return func(data_subset, minpts, eps)
 
 if __name__ == '__main__':
+<<<<<<< HEAD
+    max_iteration = 500
+=======
     max_iteration = 1000
     max_count = 500
+>>>>>>> 45216e6447e72d6ec2afa88e3749fde87de002d4
     n = 200
     
     
@@ -67,7 +73,11 @@ if __name__ == '__main__':
         for selective_p_value in tqdm(pool.imap_unordered(run_wrapper, args_sioc), total=max_iteration):
             if selective_p_value is not None:
                 list_sioc_pvalue.append(selective_p_value)
+<<<<<<< HEAD
+                if len(list_sioc_pvalue) == 300:
+=======
                 if len(list_sioc_pvalue) == max_count:
+>>>>>>> 45216e6447e72d6ec2afa88e3749fde87de002d4
                     break
     save_list_to_csv(list_sioc_pvalue, f"saved_data/{fig_name}_sioc.csv")
     
@@ -75,7 +85,11 @@ if __name__ == '__main__':
         for selective_p_value in tqdm(pool.imap_unordered(run_wrapper, args_parametric), total=max_iteration):
             if selective_p_value is not None:
                 list_parametric_pvalue.append(selective_p_value)
+<<<<<<< HEAD
+                if len(list_parametric_pvalue)  == 300:
+=======
                 if len(list_parametric_pvalue)  == max_count:
+>>>>>>> 45216e6447e72d6ec2afa88e3749fde87de002d4
                     break
     save_list_to_csv(list_parametric_pvalue, f"saved_data/{fig_name}_parametric.csv")
     # Boxplot with direct plt commands
