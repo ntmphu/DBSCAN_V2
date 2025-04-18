@@ -114,8 +114,8 @@ def fpr_si_oc():
 
 
 if __name__ == '__main__':
-    #list_FPR_SI = fpr_parametric()
-    #save_list_to_csv(list_FPR_SI, 'list_FPR_SI.csv')
+    list_FPR_SI = fpr_parametric()
+    save_list_to_csv(list_FPR_SI, 'list_FPR_SI.csv')
 
     list_FPR_naive = fpr_naive()
     save_list_to_csv(list_FPR_naive, 'list_FPR_naive.csv')
