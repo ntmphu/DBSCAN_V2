@@ -114,8 +114,8 @@ def fpr_si_oc():
 
 
 if __name__ == '__main__':
-    #list_FPR_SI = fpr_parametric()
-    #save_list_to_csv(list_FPR_SI, 'list_FPR_SI.csv')
+    list_FPR_SI = fpr_parametric()
+    save_list_to_csv(list_FPR_SI, 'list_FPR_SI.csv')
 
     list_FPR_naive = fpr_naive()
     save_list_to_csv(list_FPR_naive, 'list_FPR_naive.csv')
@@ -127,8 +127,8 @@ if __name__ == '__main__':
     save_list_to_csv(list_FPR_SI_OC, 'list_FPR_SI_OC.csv')
     
     fig, ax = plt.subplots()
-    #ax.plot(list_n, list_FPR_SI, color='green', label='SI-CLAD')
-    #ax.scatter(list_n, list_FPR_SI, color='green')
+    ax.plot(list_n, list_FPR_SI, color='green', label='SI-CLAD')
+    ax.scatter(list_n, list_FPR_SI, color='green')
     ax.plot(list_n, list_FPR_SI_OC, color='orange', label='SI-CLAD-oc')
     ax.scatter(list_n, list_FPR_SI_OC, color='orange')
     ax.plot(list_n, list_FPR_bonferroni, color='blue', label='Bonferroni')
