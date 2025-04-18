@@ -1,4 +1,9 @@
+import numpy as np
+from scipy.stats import matrix_normal
 from util import *
+from multiprocessing import Pool
+from tqdm import tqdm
+import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 
@@ -139,5 +144,49 @@ def run_sioc_TPR(n, d, delta, minpts, eps, rho):
   else:
     return selective_p_value, False
 
+def run_wrapper(args):
+    n, d, minpts, eps, rho = args
+    return run_sioc(n, d, minpts, eps, rho)
+
+
+if __name__ == '__main__':
+
+    max_iteration = 500
+    n = 200
+    d = 10
+    minpts = 10
+    eps = 3
+    Alpha = 0.05
+    rho = 0.5
+    list_p_value = []
+    
+    
+    args = [(n, d, minpts, eps, rho) for _ in range(max_iteration)]
+
+    # Counter for false positives
+    count = 0
+    fpr = 0
+
+    # Set up multiprocessing Pool and run computations in parallel
+    with Pool() as pool:
+        # Use tqdm with imap_unordered for real-time progress tracking
+        for selective_p_value in tqdm(pool.imap_unordered(run_wrapper, args), total=max_iteration):
+            if selective_p_value is not None:
+                list_p_value.append(selective_p_value)
+                if selective_p_value <= Alpha:
+                    fpr += 1
+                count += 1
+
+    # Calculate and print false positive rate
+    print()
+    print('False positive rate:', fpr / count, count)
+    print(stats.kstest(list_p_value, stats.uniform(loc=0.0, scale=1.0).cdf))
+
+    # Plot histogram of p-values
+    plt.hist(list_p_value)
+    plt.xlabel('P-Value')
+    plt.ylabel('Frequency')
+    plt.title('Selective P-Value Distribution')
+    plt.show()
 
 

@@ -7,19 +7,21 @@ import multiprocessing
 from tqdm import tqdm 
 from util import *
 
-max_iteration = 300
+max_iteration = 1000
+max_count = 500
+
 Alpha = 0.05
 list_n = [50, 100, 150, 200]
 d = 10
 minpts = 10
 eps = 3
 
+
 def run_wrapper(args):
-        n, d, minpts, eps, method = args
-        return method(n, d, minpts, eps)
+    n, d, minpts, eps, method = args
+    return method(n, d, minpts, eps)
     
 def fpr_parametric():
-    
     list_FPR = []
     for n in list_n:
         args = [(n, d, minpts, eps, run_parametric) for _ in range(max_iteration)]
@@ -33,7 +35,7 @@ def fpr_parametric():
                     if p_value <= Alpha:
                         number_of_false_positive += 1
                     count += 1
-                    if count == 120:
+                    if count == max_count:
                         break
 
         # Calculate the False Positive Rate (FPR)c
@@ -55,7 +57,7 @@ def fpr_naive():
                     if p_value <= Alpha:
                         number_of_false_positive += 1
                     count += 1
-                    if count == 120:
+                    if count == max_count:
                         break
 
         # Calculate the False Positive Rate (FPR)
@@ -78,7 +80,7 @@ def fpr_bonferroni():
                     if p_value <= p_max:
                         number_of_false_positive += 1
                     count += 1
-                    if count == 120:
+                    if count == max_count:
                         break
 
         # Calculate the False Positive Rate (FPR)
@@ -100,7 +102,7 @@ def fpr_si_oc():
                     if p_value <= Alpha:
                         number_of_false_positive += 1
                     count += 1
-                    if count == 120:
+                    if count == max_count:
                         break
 
         # Calculate the False Positive Rate (FPR)

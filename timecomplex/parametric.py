@@ -5,6 +5,7 @@ from multiprocessing import Pool
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+import time
 def run_parametric_dbscan(j, n, d, O_obs, minpts, eps, threshold, a, c):
   zk = - threshold
   list_zk = [zk]
@@ -51,6 +52,7 @@ def run_parametric_dbscan(j, n, d, O_obs, minpts, eps, threshold, a, c):
   return list_zk, list_interval, list_setofOutliers, list_sign
 
 def run_parametric(n, d, minpts, eps):
+  start_time = time.perf_counter()
 
   X, u, Sigma = generate(n,d)
 
@@ -61,7 +63,7 @@ def run_parametric(n, d, minpts, eps):
   O = [i for i in range(label.shape[0]) if label[i] == -1]
     #print(O)
   if len(O) == 0 or len(O) == n:
-    return None, None
+    return None, None, None
   #test statistic
 
   j = np.random.choice(O)
@@ -137,8 +139,9 @@ def run_parametric(n, d, minpts, eps):
 
   cdf = pivot_with_specified_interval(new_z_interval, eta, z, Sigma, mu)
   if cdf is None:
-    return None, None
+    return None, None, None
   selective_p_value = 2 * min(cdf, 1 - cdf)
   #print(selective_p_value)
-  return selective_p_value, len(list_z_interval)
+  runtime = time.perf_counter() - start_time
+  return selective_p_value, len(list_z_interval), runtime
 

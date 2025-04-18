@@ -13,9 +13,9 @@ def generate_trueoutliers(n, d, delta):
   V = np.identity(d)
 
   M_index = np.array(range(n))
-  true_outliers = np.random.choice(M_index, size=(n//5), replace=False)
+  true_outliers = np.random.choice(M_index, size=(n//3), replace=False)
   M[true_outliers] += delta
-  X = M + stats.matrix_normal.rvs(mean=M, rowcov=U, colcov=V)
+  X = np.zeros((n, d)) + stats.matrix_normal.rvs(mean=M, rowcov=U, colcov=V)
   Sigma = np.kron(V,U)
   return X, u, Sigma, true_outliers
 def generate(n, d):

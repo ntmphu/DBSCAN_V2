@@ -8,14 +8,15 @@ from tqdm import tqdm
 from util import *
 
 
-
-max_iteration = 300
+max_iteration = 1500
+max_count = 500
 Alpha = 0.05
-n = 50
-d = 10
+n = 100
+d = 5
 minpts = 10
-eps = 3
+eps = 2
 list_delta = [1, 2, 3, 4]
+
 
 def run_wrapper(args):
     n, d, delta, minpts, eps, method = args
@@ -44,7 +45,7 @@ def tpr_si_oc():
                             number_of_false_negative += 1
                         
                     count += 1
-                    if count == 120:
+                    if number_of_true_positive + number_of_false_negative == max_count:
                         break
 
         # Calculate the True Positive Rate (TPR)
@@ -75,7 +76,7 @@ def tpr_parametric():
                             number_of_false_negative += 1
                         
                     count += 1
-                    if count == 120:
+                    if number_of_true_positive + number_of_false_negative == max_count:
                         break
 
         # Calculate the True Positive Rate (TPR)
@@ -99,14 +100,13 @@ def tpr_bonferroni():
                 if p_value is not None:
                     if p_value <= p_max:
                         if true_detection:
-                            number_of_true_positive += 1
-                    
+                            number_of_true_positive += 1                    
                     else:
                         if true_detection:
                             number_of_false_negative += 1
                         
                     count += 1
-                    if count == 120:
+                    if number_of_true_positive + number_of_false_negative == max_count:
                         break
 
         # Calculate the True Positive Rate (TPR)

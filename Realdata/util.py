@@ -184,10 +184,7 @@ def solve_quadratic_inequality(a, b, c,seed = 0):
     # print(f"2a: {2*a}")
     x1 = (- b - np.sqrt(delta)) / (2*a)
     x2 = (- b + np.sqrt(delta)) / (2*a)
-    # if x1 > x2:
-    #     x1, x2 = x2, x1  
-    x1 = np.around(x1, 8)
-    x2 = np.around(x2, 8)
+
     if a < 0:
         return [(-np.inf, x2),(x1, np.inf)]
     return [(x1,x2)]

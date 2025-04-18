@@ -10,12 +10,13 @@ from util import *
 num_cores = multiprocessing.cpu_count()
 num_workers = num_cores
 
-max_iteration = 1000
+max_iteration = 1500
+max_count = 500
 Alpha = 0.05
 n = 100
-d = 10
+d = 5
 minpts = 10
-eps = 3
+eps = 2
 delta = 2
 list_rho = [0.2, 0.4, 0.6, 0.8]
 
@@ -46,7 +47,7 @@ def tpr_si_oc():
                             number_of_false_negative += 1
                         
                     count += 1
-                    if count == 120:
+                    if number_of_true_positive + number_of_false_negative == max_count:
                         break
 
         # Calculate the True Positive Rate (TPR)
@@ -77,7 +78,7 @@ def tpr_parametric():
                             number_of_false_negative += 1
                         
                     count += 1
-                    if count == 120:
+                    if number_of_true_positive + number_of_false_negative == max_count:
                         break
 
         # Calculate the True Positive Rate (TPR)
@@ -108,7 +109,7 @@ def tpr_bonferroni():
                             number_of_false_negative += 1
                         
                     count += 1
-                    if count == 120:
+                    if number_of_true_positive + number_of_false_negative == max_count:
                         break
 
         # Calculate the True Positive Rate (TPR)
@@ -118,8 +119,8 @@ def tpr_bonferroni():
 
 if __name__ == '__main__':
     
-    list_TPR_SI = tpr_parametric()
-    save_list_to_csv(list_TPR_SI, "saved_data/list_TPRchangingrho_SI.csv")
+    #list_TPR_SI = tpr_parametric()
+    #save_list_to_csv(list_TPR_SI, "saved_data/list_TPRchangingrho_SI.csv")
     list_TPR_bonferroni = tpr_bonferroni()
     save_list_to_csv(list_TPR_bonferroni, "saved_data/list_TPRchangingrho_bonferroni.csv")
     list_TPR_SI_OC = tpr_si_oc()
@@ -127,8 +128,8 @@ if __name__ == '__main__':
     
     fig, ax = plt.subplots()
 
-    ax.plot(list_rho, list_TPR_SI, color = 'green', label = 'SI-CLAD')
-    ax.scatter(list_rho, list_TPR_SI, color='green')
+    #ax.plot(list_rho, list_TPR_SI, color = 'green', label = 'SI-CLAD')
+    #ax.scatter(list_rho, list_TPR_SI, color='green')
     ax.plot(list_rho, list_TPR_SI_OC, color = 'orange', label = 'SI-CLAD-oc')
     ax.scatter(list_rho, list_TPR_SI_OC, color='orange')
     ax.plot(list_rho, list_TPR_bonferroni, color = 'blue', label = 'Bonferroni')

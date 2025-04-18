@@ -12,9 +12,9 @@ def generate_correlated_data(n, d, delta, rho):
   u = vec(M)
   U = np.identity(n)
   V = np.array([[rho**abs(i-j) for j in range(d)] for i in range(d)])
-
+  
   M_index = np.array(range(n))
-  true_outliers = np.random.choice(M_index, size=5, replace=False)
+  true_outliers = np.random.choice(M_index, size=n//3, replace=False)
   M[true_outliers] += delta
   
   
@@ -178,9 +178,7 @@ def solve_quadratic_inequality(a, b, c,seed = 0):
     x1 = (- b - np.sqrt(delta)) / (2*a)
     x2 = (- b + np.sqrt(delta)) / (2*a)
     # if x1 > x2:
-    #     x1, x2 = x2, x1  
-    x1 = np.around(x1, 8)
-    x2 = np.around(x2, 8)
+   
     if a < 0:
         return [(-np.inf, x2),(x1, np.inf)]
     return [(x1,x2)]
@@ -296,7 +294,7 @@ def compute_z_interval(j_test, n, d, O_obs, eps, neps, a, c, zk, minusO, x_zk):
 import csv
 def save_list_to_csv(data, filename):
     try:
-        with open(filename, 'w', newline='') as f:
+        with open(filename, 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(data)
         print(f"Saved {filename} successfully.")

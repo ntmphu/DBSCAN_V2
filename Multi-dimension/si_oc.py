@@ -158,7 +158,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import scipy.stats as stats
 
-    max_iteration = 1000
+    max_iteration = 150
     n = 50
     d = 10
     minpts = 10

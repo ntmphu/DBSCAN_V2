@@ -19,11 +19,10 @@ def changing_d():
        
         num_runs = 0
         while num_runs < 10:
-            start_time = time.time()
-            p, encountered_interval = run_parametric(n=n, d=d, minpts=2*d, eps=eps*(i+1))
-            end_time = time.time()
+            
+            p, encountered_interval, runtime = run_parametric(n=n, d=d, minpts=2*d, eps=eps*(i+1))
             if p is not None:
-                times[d].append(end_time - start_time)
+                times[d].append(runtime)
                 num_runs += 1
                 len_intervals[d].append(encountered_interval)
         
@@ -69,13 +68,14 @@ def changing_n():
         print(n)
         num_runs = 0
         while num_runs < 10:
-            start_time = time.time()
-            p, encountered_interval = run_parametric(n=n, d=d, minpts=minpts, eps=eps)
-            end_time = time.time()
+            
+            p, encountered_interval, runtime = run_parametric(n=n, d=d, minpts=minpts, eps=eps)
+           
             if p is not None:
-                times[n].append(end_time - start_time)
+                times[n].append(runtime)
                 num_runs += 1
                 len_intervals[n].append(encountered_interval)
+                
     save_list_to_csv(times, "time_changing_n.csv")
     save_list_to_csv(len_intervals, "inteval_changing_n.csv")
 
